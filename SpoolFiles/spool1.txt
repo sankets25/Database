@@ -1,0 +1,149 @@
+---Section II---- all queries
+
+mysql> tee
+Currently logging to file 'C:\Users\Sanket\Desktop\DB1\Spool\spool1.txt'
+mysql> source C:\Users\Sanket\Desktop\DB1\EMP.txt
+Query OK, 1 row affected (0.18 sec)
+
+Database changed
+Query OK, 0 rows affected (1.02 sec)
+
+Query OK, 0 rows affected (2.14 sec)
+
+Query OK, 0 rows affected (1.08 sec)
+
+Query OK, 0 rows affected (1.20 sec)
+
+Query OK, 0 rows affected (0.86 sec)
+
+Query OK, 0 rows affected (0.60 sec)
+
+mysql> select * from employee where Lname= "Jones"or Lname= "James";
++-------+-------+-------+-----------+------------+-----------------+------+----------+-----------+-----+
+| Fname | Minit | Lname | Ssn       | Bdate      | Address         | Sex  | Salary   | Super_ssn | Dno |
++-------+-------+-------+-----------+------------+-----------------+------+----------+-----------+-----+
+| Jared | D     | James | 111111100 | 1985-01-09 | 123Peachtree    | M    | 85000.00 | NULL      |   6 |
+| Jon   | C     | Jones | 111111101 | 1955-01-07 | 111Allgood      | M    | 45000.00 | 111111100 |   6 |
+| John  | C     | James | 555555500 | 1995-01-09 | 7676Bloomington | M    | 81000.00 | NULL      |   6 |
++-------+-------+-------+-----------+------------+-----------------+------+----------+-----------+-----+
+3 rows in set (0.00 sec)
+
+mysql> select * from employee where Fname= "Kim"or Fname= "Wilson";
++--------+-------+--------+-----------+------------+------------+------+----------+-----------+-----+
+| Fname  | Minit | Lname  | Ssn       | Bdate      | Address    | Sex  | Salary   | Super_ssn | Dno |
++--------+-------+--------+-----------+------------+------------+------+----------+-----------+-----+
+| Wilson | E     | Wallis | 222222200 | 1965-01-09 | 134Pelham  | M    | 92000.00 | NULL      |   7 |
+| Kim    | C     | Vile   | 222222202 | 1956-01-09 | 1967Jordan | M    | 53000.00 | 222222200 |   7 |
++--------+-------+--------+-----------+------------+------------+------+----------+-----------+-----+
+2 rows in set (0.00 sec)
+
+mysql> SELECT PNUMBER,Fname, SUM(HOURS) FROM PROJECT ,employee, WORKS_ON WHERE Project.PNUMBER = Works_on.PNO and employee.ssn=works_on.essn GROUP BY(Works_on.PNO) having count((works_on.pno)>1);
++---------+-------+------------+
+| PNUMBER | Fname | SUM(HOURS) |
++---------+-------+------------+
+|       1 | John  |       32.5 |
++---------+-------+------------+
+1 row in set (0.00 sec)
+
+mysql> select pname, pnumber, plocation, sum(pnumber) from project group by pnumber;
++-----------------+---------+-----------+--------------+
+| pname           | pnumber | plocation | sum(pnumber) |
++-----------------+---------+-----------+--------------+
+| ProductX        |       1 | Bellaire  |            1 |
+| ProductY        |       2 | Sugarland |            2 |
+| ProductZ        |       3 | Houston   |            3 |
+| Computerization |      10 | Stafford  |           10 |
+| Reorganization  |      20 | Houston   |           20 |
+| Newbenefits     |      30 | Stafford  |           30 |
++-----------------+---------+-----------+--------------+
+6 rows in set (0.04 sec)
+
+mysql> select essn, fname, lname, pnumber, pname, hours from project,  works_on, employee, department where works_on.essn = employee.ssn and works_on.pno = project.Pnumber and project.Dnum= department.Dnumber and department.Dnumber= 5 and project.Plocation='houston';
+Empty set (0.07 sec)
+
+mysql> select fname, lname from employee, works_on where employee.ssn= works_on.Essn and works_on.Hours>40;
+Empty set (0.00 sec)
+
+mysql> Select e.FNAME, e.LNAME, 
+    ->     (Select COUNT(*)
+    ->     FROM EMPLOYEE WHERE e.SSN = SUPER_SSN
+    ->     GROUP BY(SUPER_SSN))
+    ->     FROM Employee as e
+    ->     WHERE e.SSN IN (SELECT SUPER_SSN FROM Employee);
++--------+--------+-------------------------------------------------------------------------------------+
+| FNAME  | LNAME  | (Select COUNT(*)
+    FROM EMPLOYEE WHERE e.SSN = SUPER_SSN
+    GROUP BY(SUPER_SSN)) |
++--------+--------+-------------------------------------------------------------------------------------+
+| Jared  | James  |                                                                                   3 |
+| Sanket | Knight |                                                                                   1 |
+| Wilson | Wallis |                                                                                   2 |
+| Aditya | Freed  |                                                                                   1 |
+| Ahd    | Jabbar |                                                                                   1 |
++--------+--------+-------------------------------------------------------------------------------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT Project.pnumber, SUM(works_on.hours)
+    ->     FROM PROJECT, WORKS_ON
+    ->     WHERE Project.pnumber = Works_on.Pno
+    ->     GROUP BY(works_on.Pno);
++---------+---------------------+
+| pnumber | SUM(works_on.hours) |
++---------+---------------------+
+|       1 |                32.5 |
+|      20 |                10.0 |
+|       2 |                20.0 |
+|       3 |                40.0 |
+|      30 |                20.0 |
++---------+---------------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT FNAME, LNAME
+    ->     FROM EMPLOYEE , DEPENDENT
+    ->     WHERE Employee.SSN = Dependent.ESSN
+    ->     GROUP BY(Dependent.ESSN) HAVING COUNT(Dependent.ESSN) > 2;
++-------+-------+
+| FNAME | LNAME |
++-------+-------+
+| James | Borg  |
++-------+-------+
+1 row in set (0.04 sec)
+
+mysql> select fname, lname
+    ->   from employee, dependent
+    ->   where employee.ssn = dependent.essn and (dependent.relationship!= 'Spouse')
+    ->   group by(employee.ssn) having count(*) >1;
++-------+-------+
+| fname | lname |
++-------+-------+
+| John  | Smith |
+| James | Borg  |
++-------+-------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT EMPLOYEE.FNAME, EMPLOYEE.LNAME
+    ->     FROM EMPLOYEE , DEPT_LOCATIONS
+    ->     WHERE Employee.DNO = DEPT_LOCATIONS.DNUMBER AND DEPT_LOCATIONS.DLOCATION LIKE 'Atlanta';
++--------+--------+
+| FNAME  | LNAME  |
++--------+--------+
+| Jared  | James  |
+| Jon    | Jones  |
+| Justin | Mark   |
+| Sanket | Knight |
+| John   | James  |
++--------+--------+
+5 rows in set (0.02 sec)
+
+mysql> SELECT DNUMBER, DNAME, COUNT(PNAME)
+    ->     FROM DEPARTMENT , PROJECT
+    ->     WHERE Department.DNUMBER = Project.DNUM AND Department.DNUMBER IN (SELECT DNUMBER FROM DEPT_LOCATIONS WHERE DEPT_LOCATIONS.DLOCATION LIKE 'Houston')
+    ->     GROUP BY(Project.DNUM);
++---------+----------+--------------+
+| DNUMBER | DNAME    | COUNT(PNAME) |
++---------+----------+--------------+
+|       5 | Research |            3 |
++---------+----------+--------------+
+1 row in set (0.00 sec)
+
+mysql> notee

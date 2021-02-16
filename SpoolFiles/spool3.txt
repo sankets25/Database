@@ -1,0 +1,19 @@
+-----examples where we are getting constraint violations or it is successfully inserted
+
+mysql> INSERT INTO WORKS_ON VALUES ('555555500', 10, '22.54');
+Query OK, 1 row affected, 1 warning (0.20 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES ('555555500', 1, '2.54');
+Query OK, 1 row affected, 1 warning (0.13 sec)
+
+
+
+--foreign key violation-----
+mysql> INSERT INTO WORKS_ON VALUES ('555555500', 5, '2.54');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`company`.`works_on`, CONSTRAINT `FK_PNO` FOREIGN KEY (`Pno`) REFERENCES `project` (`Pnumber`))
+mysql> INSERT INTO DEPENDENT VALUES ('444444400','Tommy','M','1999-06-07','Son'); 
+Query OK, 1 row affected (0.12 sec)
+
+mysql> INSERT INTO DEPENDENT VALUES ('444444400','Tommy','M','1999-06-07','Son'); 
+ERROR 1062 (23000): Duplicate entry '444444400-Tommy' for key 'dependent.PRIMARY'
+mysql> notee

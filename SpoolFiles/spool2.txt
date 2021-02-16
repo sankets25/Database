@@ -1,0 +1,38 @@
+--Apply following updates------ all queries 
+
+mysql> INSERT INTO DEPARTMENT VALUES ('Services', 1, '123456789', '2012-08-11');
+ERROR 1062 (23000): Duplicate entry '1' for key 'department.PRIMARY'
+
+mysql> INSERT INTO DEPARTMENT VALUES ('Purchasing', 3, '990110110', '2013-02-02');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`company`.`department`, CONSTRAINT `FK_MGRSSN` FOREIGN KEY (`Mgr_ssn`) REFERENCES `employee` (`Ssn`))
+
+mysql> INSERT INTO DEPARTMENT VALUES ('Customers', 12, '333445555', '2013-01-14');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`company`.`department`, CONSTRAINT `FK_MGRSSN` FOREIGN KEY (`Mgr_ssn`) REFERENCES `employee` (`Ssn`))
+
+mysql> update DEPT_LOCATIONS SET DNUMBER = 9 WHERE DLOCATION LIKE 'SEATTLE';
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> Update employee set salary = 55000 where ssn = 444444444;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> INSERT INTO EMPLOYEE VALUES('Jane', 'B' , 'Smith', '666666606', '1980-03-01', '3556 W Second Street,Miami,FL', 'F', 85000, '666666603', 5);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`company`.`employee`, CONSTRAINT `fk_employee_employee` FOREIGN KEY (`Super_ssn`) REFERENCES `employee` (`Ssn`))
+mysql> update works_on set hours= 25 where pno= 1 and essn = 666884444;
+Query OK, 0 rows affected (0.03 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+ Delete the EMPLOYEE record with Ssn= '432765098'.
+  
+
+mysql> delete from employee where ssn = 432765098;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delete from department where dnumber = 9;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delete from dependent where eSsn = '666666608';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> notee

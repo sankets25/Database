@@ -1,0 +1,60 @@
+create database Company;
+-- Creating Company Schema
+USE Company;
+
+CREATE TABLE EMPLOYEE
+    ( Fname	  VARCHAR(15) NOT NULL,
+      Minit      CHAR,
+      Lname     VARCHAR(15) NOT NULL,
+      Ssn       CHAR(9)     NOT NULL,
+      Bdate     DATE,
+      Address   VARCHAR(30),
+      Sex       CHAR,
+      Salary    DECIMAL(10,2),
+      Super_ssn CHAR(9),
+      Dno       INT         NOT NULL,
+    CONSTRAINT PK_SSN PRIMARY KEY (Ssn),
+    CONSTRAINT fk_employee_employee foreign key (Super_ssn) references EMPLOYEE(Ssn)
+	);
+    
+
+CREATE TABLE DEPARTMENT
+    ( Dname     VARCHAR(15) NOT NULL,
+      Dnumber   INT         NOT NULL,
+      Mgr_ssn   CHAR(9)     NOT NULL,
+      Mgr_start_date    DATE,
+      CONSTRAINT PK_DNUMBER PRIMARY KEY(Dnumber),
+      UNIQUE(Dname),
+      CONSTRAINT FK_MGRSSN FOREIGN KEY(Mgr_ssn) REFERENCES EMPLOYEE(Ssn));
+
+CREATE TABLE DEPT_LOCATIONS
+    ( Dnumber   INT         NOT NULL,
+      Dlocation VARCHAR(15) NOT NULL,
+    CONSTRAINT PK_DNUM_LOC PRIMARY KEY(Dnumber, Dlocation),
+    CONSTRAINT FK_DNUMBER FOREIGN KEY(Dnumber) REFERENCES DEPARTMENT(Dnumber));
+
+CREATE TABLE PROJECT
+    ( Pname     VARCHAR(15) NOT NULL,
+      Pnumber   INT         NOT NULL,
+      Plocation VARCHAR(15),
+      Dnum      INT         NOT NULL,
+    CONSTRAINT PK_PNUMBER PRIMARY KEY(Pnumber),
+    CONSTRAINT UK_PNAME UNIQUE(Pname),
+    CONSTRAINT FK_DNUM FOREIGN KEY(Dnum) REFERENCES DEPARTMENT(Dnumber));
+
+CREATE TABLE WORKS_ON
+    (Essn       CHAR(9)     NOT NULL,
+     Pno        INT         NOT NULL,
+     Hours      DECIMAL(3,1),
+    CONSTRAINT PK_ESSN_PNO PRIMARY KEY(Essn,Pno),
+    CONSTRAINT FK_ESSN FOREIGN KEY(Essn) REFERENCES EMPLOYEE(Ssn),
+    CONSTRAINT FK_PNO FOREIGN KEY(Pno) REFERENCES PROJECT(Pnumber));
+
+CREATE TABLE DEPENDENT
+    ( Essn      CHAR(9)     NOT NULL,
+      Dependent_name   VARCHAR(15) NOT NULL,
+      Sex       CHAR,
+      Bdate     DATE,
+      Relationship  VARCHAR(8),
+    CONSTRAINT PK_ESSN_DNAME PRIMARY KEY(Essn,Dependent_name),
+    CONSTRAINT FK_ESSN_Dependent FOREIGN KEY(Essn) REFERENCES EMPLOYEE(Ssn)); 
